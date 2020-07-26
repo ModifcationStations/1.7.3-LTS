@@ -1,56 +1,71 @@
 diff -r -U 3 minecraft/net/minecraft/src/CodecMus.java minecraft_patched/net/minecraft/src/CodecMus.java
---- minecraft/net/minecraft/src/CodecMus.java	2019-11-22 07:58:44.736441900 +0700
-+++ minecraft_patched/net/minecraft/src/CodecMus.java	2019-11-22 08:01:52.144163400 +0700
-@@ -1,10 +1,15 @@
+--- minecraft/net/minecraft/src/CodecMus.java	2020-05-05 07:02:11.414764900 +0700
++++ minecraft_patched/net/minecraft/src/CodecMus.java	2020-05-05 07:08:35.356978500 +0700
+@@ -1,11 +1,16 @@
  package net.minecraft.src;
  
 +import java.io.IOException;
  import java.io.InputStream;
+ import net.minecraft.src.MusInputStream;
  import paulscode.sound.codecs.CodecJOrbis;
  
  public class CodecMus extends CodecJOrbis {
-     protected InputStream openInputStream() {
--        return new MusInputStream(this, this.url, this.urlConnection.getInputStream());
-+        try {
-+            return new MusInputStream(this, this.url, this.urlConnection.getInputStream());
-+        } catch (IOException ignore) {
-+            return null;
-+        }
-     }
+    protected InputStream openInputStream() {
+-      return new MusInputStream(this, this.url, this.urlConnection.getInputStream());
++      try {
++         return new MusInputStream(this, this.url, this.urlConnection.getInputStream());
++      } catch (IOException ignore) {
++         return null;
++      }
+    }
  }
-diff -r -U 3 minecraft/net/minecraft/src/EntityCreeper.java minecraft_patched/net/minecraft/src/EntityCreeper.java
---- minecraft/net/minecraft/src/EntityCreeper.java	2019-11-28 18:52:35.523776600 +0700
-+++ minecraft_patched/net/minecraft/src/EntityCreeper.java	2019-11-28 18:53:10.578914300 +0700
-@@ -11,7 +11,7 @@
+diff -r -U 3 minecraft/net/minecraft/src/EnumCreatureType.java minecraft_patched/net/minecraft/src/EnumCreatureType.java
+--- minecraft/net/minecraft/src/EnumCreatureType.java	2020-05-05 07:02:11.539688000 +0700
++++ minecraft_patched/net/minecraft/src/EnumCreatureType.java	2020-05-05 07:06:13.027554800 +0700
+@@ -6,9 +6,9 @@
+ import net.minecraft.src.Material;
  
-     protected void func_21057_b() {
-         super.func_21057_b();
--        this.field_21064_bx.func_21124_a(16, -1);
-+        this.field_21064_bx.func_21124_a(16, (byte)-1);
-         this.field_21064_bx.func_21124_a(17, (byte)0);
-     }
+ public enum EnumCreatureType {
+-   monster,
+-   creature,
+-   waterCreature;
++   monster(IMob.class, 70, Material.field_1337_a, false),
++   creature(EntityAnimal.class, 15, Material.field_1337_a, true),
++   waterCreature(EntityWaterMob.class, 5, Material.field_1332_f, true);
  
-
+    private final Class field_4278_c;
+    private final int field_4277_d;
+@@ -37,10 +37,4 @@
+    public boolean func_21168_d() {
+       return this.field_21172_g;
+    }
+-
+-   static {
+-      monster = new EnumCreatureType("monster", 0, IMob.class, 70, Material.field_1337_a, false);
+-      creature = new EnumCreatureType("creature", 1, EntityAnimal.class, 15, Material.field_1337_a, true);
+-      waterCreature = new EnumCreatureType("waterCreature", 2, EntityWaterMob.class, 5, Material.field_1332_f, true);
+-   }
+ }
 diff -r -U 3 minecraft/net/minecraft/src/MusInputStream.java minecraft_patched/net/minecraft/src/MusInputStream.java
---- minecraft/net/minecraft/src/MusInputStream.java	2019-11-22 07:58:45.075254200 +0700
-+++ minecraft_patched/net/minecraft/src/MusInputStream.java	2019-11-22 08:03:03.611201500 +0700
+--- minecraft/net/minecraft/src/MusInputStream.java	2020-05-05 07:02:11.847498600 +0700
++++ minecraft_patched/net/minecraft/src/MusInputStream.java	2020-05-05 07:07:11.571690700 +0700
 @@ -1,5 +1,6 @@
  package net.minecraft.src;
  
 +import java.io.IOException;
  import java.io.InputStream;
  import java.net.URL;
+ import net.minecraft.src.CodecMus;
+@@ -26,7 +27,11 @@
+    }
  
-@@ -25,7 +26,11 @@
-     }
+    public int read(byte[] var1, int var2, int var3) {
+-      var3 = this.field_1515_d.read(var1, var2, var3);
++      try {
++         var3 = this.field_1515_d.read(var1, var2, var3);
++      } catch (IOException ignore) {
++         return 0;
++      }
  
-     public int read(byte[] var1, int var2, int var3) {
--        var3 = this.field_1515_d.read(var1, var2, var3);
-+        try {
-+            var3 = this.field_1515_d.read(var1, var2, var3);
-+        } catch (IOException ignore) {
-+            return 0;
-+        }
- 
-         for(int var4 = 0; var4 < var3; ++var4) {
-             byte var5 = var1[var2 + var4] = (byte)(var1[var2 + var4] ^ this.field_1516_c >> 8);
+       for(int var4 = 0; var4 < var3; ++var4) {
+          byte var5 = var1[var2 + var4] = (byte)(var1[var2 + var4] ^ this.field_1516_c >> 8);

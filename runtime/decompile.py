@@ -76,6 +76,7 @@ def decompile_side(side=0, commands=None, force_jad=False):
             # LTS END JAVADOC
             commands.logger.info('> Renaming sources')
             commands.rename(side)
+            # TODO: Improve ModLoader installation. 
             if os.path.exists("conf/ModLoader.java") and side == 0:
                 commands.logger.info('> Do you want to install a fixed class for ModLoader? [y/N]')
                 commands.logger.info('> You will still need to change some errored variables from int to boolean.')

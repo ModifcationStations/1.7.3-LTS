@@ -1,12 +1,27 @@
-diff -r -U 3 minecraft/net/minecraft/src/EntityCreeper.java minecraft_patched/net/minecraft/src/EntityCreeper.java
---- minecraft/net/minecraft/src/EntityCreeper.java	2019-11-28 18:52:35.523776600 +0700
-+++ minecraft_patched/net/minecraft/src/EntityCreeper.java	2019-11-28 18:53:10.578914300 +0700
-@@ -11,7 +11,7 @@
+diff -r -U 3 minecraft_server/net/minecraft/src/EnumCreatureType.java minecraft_server_patched/net/minecraft/src/EnumCreatureType.java
+--- minecraft_server/net/minecraft/src/EnumCreatureType.java	2020-05-20 01:08:29.419072000 +0700
++++ minecraft_server_patched/net/minecraft/src/EnumCreatureType.java	2020-05-20 01:30:06.123036500 +0700
+@@ -6,9 +6,9 @@
+ import net.minecraft.src.Material;
  
-     protected void func_21044_a() {
-         super.func_21044_a();
--        this.field_21045_af.func_21153_a(16, -1);
-+        this.field_21045_af.func_21153_a(16, (byte)-1);
-         this.field_21045_af.func_21153_a(17, (byte)0);
-     }
+ public enum EnumCreatureType {
+-   monster,
+-   creature,
+-   waterCreature;
++   monster(IMob.class, 70, Material.field_526_a, false),
++   creature(EntityAnimal.class, 15, Material.field_526_a, true),
++   waterCreature(EntityWaterMob.class, 5, Material.field_521_f, true);
  
+    private final Class field_21109_d;
+    private final int field_21108_e;
+@@ -37,10 +37,4 @@
+    public boolean func_21103_d() {
+       return this.field_21106_g;
+    }
+-
+-   static {
+-      monster = new EnumCreatureType("monster", 0, IMob.class, 70, Material.field_526_a, false);
+-      creature = new EnumCreatureType("creature", 1, EntityAnimal.class, 15, Material.field_526_a, true);
+-      waterCreature = new EnumCreatureType("waterCreature", 2, EntityWaterMob.class, 5, Material.field_521_f, true);
+-   }
+ }
