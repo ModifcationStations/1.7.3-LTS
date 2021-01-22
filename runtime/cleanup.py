@@ -97,7 +97,7 @@ class Cleanup:
         print("> Deleting system specific files from root...")
         systime = time.time()
         try:
-            for file in ["decompile", "recompile", "reobfuscate", "startclient", "startserver", "updatemcp", "updatemd5"]:
+            for file in ["decompile", "recompile", "reobfuscate", "startclient", "startserver", "updatemcp", "updatemd5", "makepatches"]:
                 if os.path.exists(file + "." + self.systemext) and os.path.isfile(file + "." + self.systemext):
                     os.unlink(file + "." + self.systemext)
         except Exception as e:
